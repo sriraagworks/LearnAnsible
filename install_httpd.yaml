@@ -1,0 +1,15 @@
+---
+- name: First Test Play To Commit Stuff to GITHUB
+  hosts: all
+  tasks:
+  
+    - name: Install HTTPD
+      yum:
+        service: httpd
+        state: installed
+
+    - name: Start/Enable HTTPd
+      service:
+        name: httpd
+        enabled: true
+        state: started
