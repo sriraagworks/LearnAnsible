@@ -10,4 +10,10 @@
     - name: Printing variable values using debug module
       debug:
         msg: '{{msg}}'
-  
+
+    - name: Task to print some of the magic variables
+      debug:
+        msg:
+          - "Ansible Version => {{ansible_version['full']}}"
+          - "Ansible Forks => {{ansible_forks}}"
+          - "Ansible Play Hosts All => {{ansible_play_hosts_all}}"
