@@ -1,0 +1,33 @@
+---
+- name: "Play to learn about Facts/Custom-Facts/Magic-Variables"
+  hosts: all
+  vars:
+    message: 'hello world!'
+  vars_files:
+    - user_info.yml
+  tasks:
+    - name: Printing out facts using debug module
+      debug:
+       #msg: '{{ansible_facts}}'
+        msg: "{{message}}"
+
+#    - name: Magic Variables
+#      debug:
+#        msg: "{{ hostvars['host2']['groups']}}"
+#   
+    - name: Another Set of Facts about the system
+      debug:
+        msg: |
+          "
+          Hostname => {{ansible_facts['hostname']}},
+          Architecture => {{ansible_facts['architecture']}},
+          Distribution => {{ansible_facts['distribution']}},
+          Release => {{ansible_facts['distribution_release']}},
+          Version => {{ansible_facts['distribution_version']}},
+          Memory-Free[MB] => {{ansible_facts['memfree_mb']}},
+          Memory-Total[MB] => {{ansible_facts['memtotal_mb']}},
+          Processor_Cores => {{ansible_facts['processor_cores']}},
+          Processor_Count => {{ansible_facts['processor_count']}},
+          Threads_Per_Core => {{ansible_facts['processor_threads_per_core']}},
+          Processor_VCPUS => {{ansible_facts['processor_vcpus']}}
+          "

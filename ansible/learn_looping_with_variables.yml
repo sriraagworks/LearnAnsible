@@ -1,0 +1,41 @@
+---
+- name: Play to learn about looping through variables and accessing their values in modules
+  hosts: onms
+  vars_files:
+    - user_info.yml
+  tasks:
+    - name: Sample Output to print array values using loops in ansible
+      debug:
+        msg: "{{item}}"
+      loop:
+        - "sriraag"
+        - "amruth"
+        - "rakesh"
+    - name: Using Loops-Iterating Over a List of Hashes
+      debug:
+        msg:
+          - "NAME=>{{item.name}}"
+          - "ID=>{{item.id}}"
+      loop:
+        - { name: 'user1', id: 573 }
+        - { name: 'user2', id: 111 }
+    
+    - name: Using Loops to loop over dict
+      debug:
+        msg:
+          - "Name=> {{item.name}}"
+          - "Power=> {{item.power}}"
+      loop:
+        - name: 'Flash'
+          power: 'super speed'
+        - name: 'Superman'
+          power: 'super strength'
+        - name: 'Batman'
+          power: 'money'
+    
+    - name: Using Loops with dict from variable in a file
+      debug:
+        msg:
+          - "Avenger-Name:: {{item.hero_name}}"
+          - "Avenger-Power:: {{item.power}}"
+      loop: "{{avengers}}"

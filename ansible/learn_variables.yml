@@ -1,0 +1,13 @@
+---
+- name: First Play to understand about variables
+  hosts: all
+  gather_facts: false
+  vars_files:
+    - variable_file
+  vars:
+    msg: 'Hi from inside of playbook'
+  tasks:
+    - name: Printing variable values using debug module
+      debug:
+        msg: '{{msg}}'
+  
