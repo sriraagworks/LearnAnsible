@@ -1,0 +1,62 @@
+---
+- name: Play to learn about Conditionals in Ansible
+  hosts: onms
+  gather_facts: true
+  vars:
+    print_hello: true
+    temp_var: false
+    min_mem_mb: 1024
+    supported_os_family:
+      - RedHat
+      - Fedora
+      - Ubuntu
+  tasks:
+    
+    - name: Print Hello World based on a boolean conditional
+      debug:
+        msg: 'hello world'
+      when: print_hello == true
+    
+
+    - name: Checking multiple conditions
+      debug:
+        msg: 'Printing message when multiple conditions are true'
+      when:
+        - true
+        - ( 11 > 1 )
+        - ( "string1" == "string1" )
+        - print_hello != false
+        - temp_var != true # Can also be written as not temp_var
+
+
+    - name: Checking Conditionals with OR and AND
+      debug:
+        msg: 'Checking Conditionals with OR and AND'
+      when: ( 221111 > 11111 and 'a' == 'a' ) or ( false )
+
+    - name: Checking multi-line conditionals
+      debug:
+        msg: 'Checking multi-line conditionals'
+      when: >
+        ( 1 == 1 and 'a' == 'A')
+        or
+        ( true )
+
+    - name: Checking is-defined and another custom-fact in conditional
+      debug:
+        msg: 'Checking if temp_var is defined and ansible_distribution/distribution version is RedHat and 8'
+      when:
+        - ( temp_var is defined or 1!=2 )
+        - ( ansible_facts['distribution_major_version']|int == 8 and ansible_facts['distribution'] == 'RedHat' ) 
+        -  ansible_facts['memfree_mb'] >= min_mem_mb
+        - ansible_facts['distribution'] in supported_os_family
+## Here above  am typecasting to int since distribution_major_version returns a string or i can just do ansible_facts['distribution_major_version'] == "8" 
+
+    - name: Print variables value
+      debug:
+        msg:
+          - "is print_hello defined => {{print_hello}}"
+          - "ansible-distribution => {{ansible_facts['distribution']}}"
+          - "ansible-distribution-major-version => {{ansible_facts['distribution_major_version']}}"
+          - "ansible-mem-free-mb => {{ansible_facts['memfree_mb']}}"
+          - "Supported OS Family => {{ supported_os_family }}"

@@ -1,0 +1,7 @@
+{
+   "es_info":{
+      "cluster_name":"test-cluster",
+      "cross-cluster":"not-enabled",
+      "version":8
+   }
+}

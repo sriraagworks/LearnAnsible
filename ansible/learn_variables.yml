@@ -17,3 +17,5 @@
           - "Ansible Version => {{ansible_version['full']}}"
           - "Ansible Forks => {{ansible_forks}}"
           - "Ansible Play Hosts All => {{ansible_play_hosts_all}}"
+          
+

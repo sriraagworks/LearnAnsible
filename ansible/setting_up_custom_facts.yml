@@ -1,0 +1,21 @@
+---
+- name: Play to understand about custom facts
+  hosts:  onms
+  vars:
+    facts_directory: "/etc/ansible/facts.d/"
+    facts_file: "opennms.fact"
+  tasks:
+    - name: creating facts.d directory
+      file:
+        state: directory
+        path: "{{facts_directory}}"
+        owner: root
+        group: root
+        recurse: true
+
+    - name: add the custom fact file
+      copy:
+        src: "{{facts_file}}"
+        dest: "{{facts_directory}}"
+        owner: root
+        group: root

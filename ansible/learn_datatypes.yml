@@ -1,0 +1,54 @@
+---
+- name: Play to learn about Lists/Dictionaries and how to define them etc..
+  hosts: onms
+  gather_facts: false
+  vars:
+## Simple list
+    simple_list:
+      - item1
+      - item2
+## List of Dictionary/Hash
+    list_of_hashes:
+      - name: 'apple'
+        type: 'fruit'
+      - name: 'spinach'
+        type: 'vegetable'
+
+## Simple Dict try 2
+    my_dict2:
+      user: 'u1'
+      id: 1
+      dept: 'IT'
+
+## Nested Dict
+    nested_dict:
+      books:
+        name: 'ego is the enemy'
+        author: 'ryan holiday'
+      user:
+        - name: 'spiderman'
+          universe: 'marvel'
+        - name: 'flash'
+          universe: 'dc comics'
+        - fruits:
+            fname: 'apple'
+            quantity: 10
+
+
+  tasks:
+    - name: Printing Simple List
+      debug:
+        msg: "{{simple_list}}"
+
+    - name: Printing List of Hashes/Dictionaries
+      debug:
+        msg: "{{list_of_hashes}}"
+    
+    - name: Printing Simple Dictionary
+      debug:
+        msg: "{{my_dict2}}"
+
+    - name: Printing Another example of nested dictionary
+      debug:
+        msg: '{{nested_dict}}'
+
