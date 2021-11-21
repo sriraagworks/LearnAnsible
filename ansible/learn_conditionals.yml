@@ -50,7 +50,7 @@
         - ( ansible_facts['distribution_major_version']|int == 8 and ansible_facts['distribution'] == 'RedHat' ) 
         -  ansible_facts['memfree_mb'] >= min_mem_mb
         - ansible_facts['distribution'] in supported_os_family
-## Here above  am typecasting to int since distribution_major_version returns a string or i can just do ansible_facts['distribution_major_version'] == "8" 
+## Here above I am typecasting to int since distribution_major_version returns a string or i can just do ansible_facts['distribution_major_version'] == "8" 
 
     - name: Print variables value
       debug:
