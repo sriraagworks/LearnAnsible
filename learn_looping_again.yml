@@ -1,0 +1,58 @@
+---
+- name: Play to learn about looping with variables
+  hosts: onms
+  gather_facts: false
+  vars:
+    simple_list: 
+      - item1
+      - item2
+    simple_dict: 
+      users:
+        name: 'dict_user1'
+        sex: 'male'
+        interests: 
+          - running
+          - anime
+          - cycling
+        
+    list_of_dict:
+      - name: 'user1'
+        id: 1
+      - name: 'user2'
+        id: 2 
+
+    another_list_of_dict:
+      heroes:
+        - name: 'flash'
+          power: 'super-speed'
+        - name: 'superman'
+          power: 'super-strength'
+
+  tasks:
+  
+    - name: Printing Contents of simple list 
+      debug:
+        msg: '{{ item }}'
+      loop: "{{ simple_list }}"
+
+    - name: Printing Contents of list of dictionary
+      debug:
+        msg:
+          - '{{ item }}'
+          - '{{ item.name }}'
+          - '{{ item.id }}'
+      loop: '{{ list_of_dict }}'
+
+    - name: Printing Contents of simple dictionary
+      debug:
+        msg:
+          - '{{ item }}'
+          - 'KEY=> {{ item.key }}'
+          - 'VALUE=> {{ item.value }}'
+      loop: '{{ simple_dict|dict2items}}'
+    
+    - name: Printing another list of dictionary/hashes
+      debug:
+        msg:
+          - "{{item}}"
+      loop: "{{another_list_of_dict|dict2items}}"

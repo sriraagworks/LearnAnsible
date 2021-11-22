@@ -1,0 +1,43 @@
+---
+- name: Play to test registering loops output to a variable and print it out
+  gather_facts: false
+  vars:
+    simple_list:
+      - item1
+      - item2
+    
+    list_of_dict:
+      users: [ 
+        {
+          'name': 'sri', 
+          'id': 1
+        },
+        {
+          'name': 'test', 
+          'id': 2} 
+              ]
+    dict_of_list:
+      users:
+        - { 'user': 'sri', 'id': 1}
+        - { 'name': 'user1', 'id': 2}          
+  hosts: onms
+  tasks:
+    - name: Debug Task to regsiter loops output into a variable
+      shell: 'echo "this is my itme => {{ item }}" '
+      loop: "{{simple_list}}"
+      register: simple_list_output
+
+    - name: Printing simple list output variable 
+      debug:
+        var: simple_list_output
+
+    - name: Second try at printing only results from simple list output
+      debug:
+        msg: " ********************** {{ item.rc }} => {{ item.stdout }}"
+      loop: "{{ simple_list_output['results'] }}"
+  
+    - name: Third Try at printing list of dict
+      debug:
+        msg: '{{item.name}}'
+      loop: "{{ dict_of_list['users'] }}"
+      when: item.name is defined
