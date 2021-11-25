@@ -1,0 +1,86 @@
+---
+- name: Play to learn about creating/accessing/looping through dictionary inside a dictionary
+  gather_facts: false
+  hosts: localhost
+  vars:
+    dict1:
+        student_info:
+          name: 'a'
+          id: 1
+          dept_id: 11
+        dept_info:
+          name: 'mca'
+          id: 11
+    
+    dict2:
+      marvel:
+        - name: 'tony stark'
+          alter_ego: 'ironman'
+        - name: 'peter parker'
+          alter_ego: 'spiderman'
+
+      dc:
+        - name: 'barry allen'
+          hero_name: 'flash'
+        - name: 'clark kent'
+          hero_name: 'superman'
+
+  tasks:
+### Working with dict1
+    - name: Task to print the value of dict1 and values inside of it
+      debug:
+        msg:
+          - '{{ dict1 }}'
+          - 'student-name => {{dict1["student_info"]["name"]}}'
+          - 'student-id => {{dict1["student_info"]["id"]}}'
+          - 'student-dept-id => {{dict1["student_info"]["dept_id"]}}'
+      tags:
+        - dict1_tag
+    
+    - name: Looping through dicts inside dict
+      debug:
+        msg:
+          - '{{ item }}'
+      loop: '{{ dict1|dict2items }}'
+      tags:
+        - dict1_tag
+    
+    - name: Looping through dicts inside dict
+      debug:
+        msg:
+          - '{{ item }}'
+          - '{{item.key}} <==> {{ item.value}}'
+      loop: '{{ dict1["student_info"]|dict2items }}'
+      when: item.key == 'name'
+      tags:
+        - dict1_tag
+
+#### Working with dict2 now
+    - name: Task to print contents of dict2
+      debug:
+        msg:
+          - '{{ dict2 }}'
+          - '{{ dict2["marvel"][0]["name"] }}' 
+## since dict2 is a dictionary but marvel inside of it is a list of dictionary which is why dict2['marvel']['name'] doesnt work
+## 'cuz it is like this => 
+##  dict2: { 'marvel': [{'name':'tony stark', 'alter_ego': 'ironman'},{'name':'peter parker', 'alter_ego': 'spiderman'}] }
+      tags:
+        - dict2_tag
+
+    - name: Looping through dict2 content 
+      debug:
+        msg:
+          - '{{ item}}'
+      loop: '{{ dict2|dict2items }}'
+      tags:
+        - dict2_tag
+    
+    - name: Looping through dict2 content
+      debug:
+        msg:
+          - '{{ item}}'
+          - '{{ item.name }}'
+      loop: '{{ dict2["marvel"] }}'
+      tags:
+        - dict2_tag
+

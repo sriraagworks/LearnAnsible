@@ -1,0 +1,44 @@
+---
+- name: Play to learn about creating/accessing/looping through dictionaries
+  hosts: localhost
+  gather_facts: false
+  vars:
+    simple_dict:
+      user_info:
+        username: 'user1'
+        id: 1234
+
+    dict2: { "user_info": { "username" : 'user2', 'id': 5678 } }
+
+  tasks:
+    - name: Printing simple dictionary
+      debug:
+        msg:
+          - '{{simple_dict }}'
+    
+    - name: Printing simple dict2
+      debug:
+        msg:
+          - '{{dict2 }}'
+
+    - name: Accessing Elements of simple dictionary
+      debug:
+        msg:
+          - 'Username => {{simple_dict["user_info"]["username"]}}'
+          - 'ID => {{simple_dict["user_info"]["id"]}}'
+
+    - name: Looping through simple dictionary
+      debug:
+        msg:
+          - '{{ item }}'
+          - '{{ item.key }} ==> {{ item.value }}'
+          - '{{ item["value"]["id"]}} <==> {{item.value["username"] }}'
+      loop: '{{ simple_dict|dict2items }}'
+    
+    - name: Looping through dict inside of simple dictionary called user_info
+      debug:
+        msg:
+          - '{{ item }}'
+          - '{{ item.key }} ==> {{ item.value }}'
+      loop: '{{ simple_dict["user_info"]|dict2items }}'
+      
