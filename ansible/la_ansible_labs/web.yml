@@ -1,0 +1,32 @@
+---
+- name: Play to setup httpd package/service
+  hosts: web
+  gather_facts: false
+  vars:
+    webpackage: 'httpd'
+    webservice: 'httpd'
+    web_content: 'http://repo.example.com/website.tgz'
+  tasks:
+
+    - name: ' Installing {{ webpackage }} package '
+      yum:
+        name: '{{ webpackage }}'
+        state: latest
+        update_cache: true
+
+    - name: 'Enabling/Starting {{webservice}} service'
+      service:
+        name: '{{webservice}}'
+        enabled: true
+        state: started
+
+    - name: 'Downloading the website contents'
+      get_url:
+        url: '{{web_content}}'
+        dest: '/tmp/website.tgz' ### This is going to be downloaded on the remote hosts which are managed hosts
+
+    - name: 'Unarchive and send website.tgz file'
+      unarchive:
+        remote_src: true ## Since the file was already downloaded and present in remote host thus using this
+        src: '/tmp/website.tgz'
+        dest: '/var/www/html'

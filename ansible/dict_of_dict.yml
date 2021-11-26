@@ -63,7 +63,13 @@
           - '{{ dict2["marvel"][0]["name"] }}' 
 ## since dict2 is a dictionary but marvel inside of it is a list of dictionary which is why dict2['marvel']['name'] doesnt work
 ## 'cuz it is like this => 
-##  dict2: { 'marvel': [{'name':'tony stark', 'alter_ego': 'ironman'},{'name':'peter parker', 'alter_ego': 'spiderman'}] }
+
+## loop: '{{dict2|dict2items}}'
+## (item={'key': 'marvel', 'value': [{'name': 'tony stark', 'alter_ego': 'ironman'}, {'name': 'peter parker', 'alter_ego': 'spiderman'}]})
+## (item={'key': 'dc', 'value': [{'name': 'barry allen', 'hero_name': 'flash'}, {'name': 'clark kent', 'hero_name': 'superman'}]})
+
+## loop: '{{dict2["marvel"]|dict2items}}'
+## (item={'name': 'tony stark', 'alter_ego': 'ironman'})
       tags:
         - dict2_tag
 
