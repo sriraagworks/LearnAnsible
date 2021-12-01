@@ -1,0 +1,75 @@
+---
+- name: Play to learn about file management
+  hosts: localhost
+  gather_facts: false
+  vars:
+    src_dir: '/home/admin/lab'
+  tasks:
+    - name: Create a simple file
+      file:
+        state: touch
+        path: '{{src_dir}}/simple_file'
+        owner: 'admin'
+        group: 'admin'
+        mode: '0660'
+
+    - name: Create a simple directory
+      file:
+        state: directory
+        path: '{{src_dir}}/simple_dir'
+        mode: '0750'
+        owner: admin
+        group: admin
+
+    - name: Create Recursive Directories
+      file:
+        state: directory
+        path: '{{src_dir}}/main/{{item}}'
+        owner: admin
+        group: admin
+        mode: '0755'
+      loop:
+        - sub1
+        - sub2
+
+    - name: Special File Permissions SGID
+      file:
+        state: directory
+        path: '{{src_dir}}/test_dir'
+        mode: '2755'
+        group: admin
+        owner: admin
+
+    - name: Special File Permissions Sticky Bit - Only Owners can delete the file
+      file:
+        state: directory
+        path: '{{src_dir}}/test_dir'
+        mode: '1755'
+        group: admin
+        owner: admin
+
+    - name: Checking if a file exists
+      stat:
+        path: '{{src_dir}}/{{item}}'
+      register: chk_output
+      loop:
+        - 'simple_file'
+        - 'main'
+
+    - name: Printing chk_output using debug
+      debug:
+        msg:
+          - '{{ chk_output }}'
+#          - 'Exists  => {{ chk_output["stat"]["exists"] }}'
+
+
+    - name: Printing List of Dictionary from registered output
+      debug:
+        msg: '{{ item}}'
+      loop: '{{chk_output["results"]}}'
+
+
+#    - name: Printing A Debug Message If File Does Not Exist
+#      debug:
+#        msg: 'Ooops the file does not exist'
+#      when: chk_output['stat']['exists'] != True
