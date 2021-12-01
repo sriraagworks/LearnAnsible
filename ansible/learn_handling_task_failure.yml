@@ -1,0 +1,46 @@
+---
+- name: Play to gather facts and use templates to add them to motd
+  hosts: all
+  become: true
+  vars:
+    src_file: './motd.j2'
+    dest_file: '/etc/motd'
+    web_package: 'http'
+  tasks:
+    - name: Gathering important facts and printing out the same
+      debug:
+        msg: |
+          "
+          HOSTNAME => {{ansible_facts['hostname']}},
+          OS-DISTRIBUTION => {{ansible_facts['distribution']}},
+          OS-VERSION => {{ansible_facts['distribution_major_version']}},
+          TOTAL-Memory-MB => {{ansible_facts['memtotal_mb']}},
+          CPUs => {{ansible_facts['processor_vcpus']}}
+          "
+
+
+    - name: Adding MOTD Template to onms
+      template:
+        backup: true
+        src: '{{src_file}}'
+        dest: '{{dest_file}}'
+      ignore_errors: true
+
+
+    - name: Installing WEB Package on RedHat Distribution
+      block:
+        - name: Install Web Package
+          yum:
+            name: '{{web_package}}'
+            state: latest
+      when: ansible_facts['distribution'] == 'RedHat'
+
+      rescue:
+        - name: Error Message
+          debug:
+            msg: 'Ooops.. Something Went wrong "{{ web_package }}" seems to be unavailable'
+
+      always:
+        - name: Attempt Finished Message
+          debug:
+            msg: 'Attempt Completed'
