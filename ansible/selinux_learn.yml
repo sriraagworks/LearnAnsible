@@ -1,0 +1,43 @@
+---
+- name: Play to learn about selinux and setting up policy/state and then change the context type for a path/directory
+  hosts: host3
+  gather_facts: false
+  vars:
+    custom_dir: '/web'
+    selinux_context_type: 'httpd_sys_content_t'
+  tasks:
+
+    - name: Installing HTTPD Packages
+      yum:
+        name: httpd
+        state: latest
+
+    - name: Setting up custom httpd directory
+      file:
+        state: directory
+        path: '{{custom_dir}}'
+        mode: '0755'
+        owner: root
+        group: root
+        setype: '{{selinux_context_type}}'
+# this acts as chcon and is temporary if a restorecon is run the selinux fcontext will be reverted back to older context type
+# so technically either setype with file module and then use sefcontext module to add the same policy to selinux policies
+# so that it is not lost during a restorecon
+
+    - name: Permanently Set Selinux type
+      sefcontext:
+        setype: '{{selinux_context_type}}'
+        state: present
+        target: '/web(/.*)?'
+        reload: true
+
+    - name: Changing Selinux State to Permissive
+      selinux:
+        policy: 'targeted'
+        state: 'enforcing'
+      notify: reboot_task
+
+  handlers:
+    - name: Rebooting the host now
+      reboot:
+      listen: reboot_task
