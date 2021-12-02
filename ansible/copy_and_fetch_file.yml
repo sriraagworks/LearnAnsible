@@ -1,0 +1,53 @@
+---
+- name: Play to learn about copying and fetching files/directories to remote host
+  hosts: host3
+  vars:
+    src_dir: '/home/admin/lab'
+  become: true
+  tasks:
+    - name: Copy local dir from managed host to remote host
+      copy:
+        src: '{{src_dir}}'
+        dest: '/tmp'
+        backup: true
+        mode: 'preserve' # COPY MODULE WILL ONLY PRESERVE PERMISSIONS AND NOT OWNERSHIP
+# here mode: 'preserve' can be used too to preserve original permissions this will not preserve directory permissions when usign directory mode
+## When there are file inside of nested directories this mode permissions will apply to only files inside.
+        owner: admin
+        group: admin
+        directory_mode: '2755' ## This will apply given permissions to all nested directories
+
+    - name: Create a test_file in /tmp
+      copy:
+        dest: '/tmp/test_file'
+        content: 'Hello World!'
+        owner: admin
+        group: admin
+        mode: '0660'
+        backup: true
+
+    - name: Copy a file from remote host within remote host
+      copy:
+        src: '/tmp/test_file'
+        dest: '/tmp/test_file_again'
+        remote_src: true ## This is where source will be remote i.e the managed host
+        mode: 'preserve'
+
+    - name: Copy a file locally on remote host
+      copy:
+        src: '/home/admin/lab/simple_file' # here the src is local control node
+        dest: '/home/admin/lab/simple_file_again'
+        mode: 'preserve' ## Again only the file permissions will be preserved and not the file ownership
+        backup: true
+
+    - name: Fetch hostname_info file from remote host
+      fetch:
+        src: '/root/hostname_info'
+        dest: '/tmp/'
+        flat: true
+
+    - name: Fetching a nested directory from a remote host
+      fetch:
+        src: '/root/main_dir' ## Realised Fetch will not work with directories and expects it to be a file , probably need to zip it
+        dest: '/tmp'
+
