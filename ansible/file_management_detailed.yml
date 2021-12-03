@@ -1,0 +1,108 @@
+---
+- name: Play to learn about file management
+  hosts: localhost
+  gather_facts: false
+  vars:
+    main_dir: '/Users/sriraagsridhar/Desktop/Learning/Ansible/LAB/playground'
+    file_info:
+      - name: 'file1'
+        perm: '0660'
+      - name: 'test.sh'
+        perm: '0755'
+      
+  tasks:
+    
+    - name: Create a simple file
+      file:
+        state: touch
+        path: '{{main_dir}}/simple_file'
+        owner: sriraagsridhar
+        group: staff
+        mode: '0660'
+
+    - name: Creating multiple files
+      file:
+        state: touch
+        path: '{{main_dir}}/{{item.name}}'
+        mode: '{{item.perm}}'
+      loop: '{{ file_info }}'
+
+    - name: Creating a simple directory
+      file:
+        state: directory
+        path: '{{main_dir}}/simple_dir'
+        mode: '2755'
+    
+    - name: Creating Nested Directories
+      file:
+        state: directory
+        path: '{{main_dir}}/main_dir/{{item}}'
+        mode: '2755'
+      loop:
+        - sub_dir1
+        - sub_dir2
+        - sub_dir3
+
+    - name: Creating 2 directories for Symbolic links
+      file:
+        state: directory
+        path: '{{main_dir}}/apache_kafka_install/{{item}}'
+      loop:
+        - config
+        - lib
+        - logs
+        - data
+
+    - name: Creating a symbolic link from apache_kafka_install directory to kafka
+      file:
+        state: link
+        src: '{{main_dir}}/apache_kafka_install'
+        dest: '{{main_dir}}/kafka'
+
+
+    - name: Deleting Simple File
+      file:
+        state: absent
+        path: '{{main_dir}}/simple_file'
+      tags:
+        - delete_dir
+
+    - name: Deleting Simple Directory
+      file:
+        state: absent
+        path: '{{main_dir}}/simple_dir'
+      tags:
+        - delete_dir
+
+    - name: Delete Nested Directories
+      file:
+        state: absent
+        path: '{{main_dir}}/main_dir'
+
+ #####
+    - name: Check if a file/directory exists
+      stat:
+        path: '{{item}}'
+      loop:
+        - '{{main_dir}}/test1.sh'
+        - '{{main_dir}}/test.sh'
+        - '{{main_dir}}/apache_kafka_install'
+      register: chk_file
+      tags:
+        - check
+
+    - name: Printing chk_file variable using debug
+      debug:
+        var: chk_file
+      tags:
+        - check
+
+    - name: Looping through the collected information from chk_file
+      debug:
+        msg:
+          - '{{ item["stat"]["path"] }}'
+          - '{{ item["stat"]["exists"] }}'
+      loop: '{{ chk_file["results"] }}'
+      when: item['stat']['exists'] == True
+      tags: 
+        - check
