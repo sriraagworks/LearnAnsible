@@ -1,0 +1,66 @@
+---
+- name: Play to understand about copy and fetch module
+  hosts: onms
+  tasks:
+#by default all modules go from control_node to managed_node
+    - name: Copy a simple directory from control node  to managed node
+      copy:
+        src: '/home/admin/lab/simple_dir'
+        dest: '/tmp'
+        mode: 'preserve'
+        group: 'admin'
+        owner: 'admin'
+
+    - name: Copy/Create a file with specific content
+      copy:
+        dest: '/tmp/simple_dir/new_file_created.txt'
+        content: 'This is a file which was created using copy module....'
+        mode: '0644'
+        owner: 'admin'
+        group: 'admin'
+
+    - name: Copying the nested directories
+      copy:
+        src: '/home/admin/lab'
+        dest: '/tmp/'
+        directory_mode: '2755' # this is for the directories inside if not set defaults using UID will be set
+        mode: 'preserve' # this is for the files in nested directories if not set defaults using UID will be set
+
+
+    - name: Copying directories from files/dir present in managed node within itself.. 
+      copy:
+        remote_src: true
+        src: '/tmp/lab/'
+        directory_mode: '2755'
+        dest: '/tmp/lab_new'
+        mode: 'preserve'
+
+    - name: Fetching a simple file from managed node/remote host to control node
+      fetch:
+        src: '/tmp/simple_dir/new_file_created.txt'
+        dest: '/home/admin/'
+        flat: true
+
+    - name: Archiving Files on remote/managed node
+      archive:
+        path: '/tmp/lab_new'
+        dest: '/tmp/lab_new.tar.gz'
+        format: gz
+
+    - name: Fetching the tarred file from managed node to controlled node
+      fetch:
+        src: '/tmp/lab_new.tar.gz'
+        dest: '/home/admin/'
+        flat: true
+
+    - name: Unarchiving the same file
+      unarchive:
+        remote_src: false # since remote_src is false thus the source file is present in control node
+        src: '/home/admin/lab_new.tar.gz' #src is present locally in controlled node and not on managed node
+        dest: '/tmp/unarchived/' # and this will be unarchived in managed_node remotely on its /tmp/unarchived/ directory
+
+    - name: Unarchiving from remote_src/managed node on remote_dest/managed node itself
+      unarchive:
+        remote_src: true # In this case we will have the source.archived file present in managed-node/remote dest itself
+        src: '/tmp/lab_new.tar.gz' # this is the source file which is present in the remote host
+        dest: '/tmp/unarchived/another/'
