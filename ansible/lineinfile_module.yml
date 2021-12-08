@@ -1,0 +1,36 @@
+---
+- name: Play to learn about lineinfile module
+  hosts: localhost
+  gather_facts: false
+  vars:
+    dest_file: '/tmp/lineinfile_file.txt'
+  become_user: sriraagsridhar
+  tasks:
+    
+    - name: Task to create a temp file using lineinfile module
+      lineinfile:
+        create: true
+        path: '{{dest_file}}'
+        line: '{{ item }}'
+      loop:
+        - '#Below Lines are added using line in file'
+        - 'line1'
+        - 'line2'
+        - 'ipaddress = 127.0.0.1'
+    
+    - name: Task to create a temp file using lineinfile module
+      lineinfile:
+        path: '{{dest_file}}'
+        line: '#Second Task to add another line to same file in the same play'
+
+    - name: Task to update a line using lineinfile before a matched line
+      lineinfile:
+        path: '{{dest_file}}'
+        insertbefore: '^#Second.*'
+        line: 'line3'
+    
+    - name: Task to update a line after a matched line using lineinfile
+      lineinfile:
+        path: '{{ dest_file }}'
+        insertbefore: '^ipaddress'
+        line: '# Below is ipaddress'

@@ -1,0 +1,61 @@
+---
+- name: play to learn about block in file
+  hosts: localhost
+  gather_facts: false
+  become_user: admin
+  tasks:
+
+    - name: Creating a text file using blockinfile with bunch of lines
+      blockinfile:
+        create: true
+        path: '/tmp/test_block.txt'
+        block: |
+          1. Line 1
+          2. Line 2
+          3. Line 3
+          test_line
+      tags:
+        - add_block
+
+
+    - name: Remove the block of text from a file using blockinfile
+      blockinfile:
+        state: absent
+        path: '/tmp/test_block.txt'
+        block: |
+          test
+          test2
+      tags:
+        - remove_block
+
+    - name: Adding another block of text to same file using blockinfile
+      blockinfile:
+        path: '/tmp/test_block.txt'
+        marker: "<!-- {mark} ANSIBLE MANAGED BLOCK -->"
+        marker_begin: 'STARTING HERE'
+        marker_end: 'ENDING HERE'
+        insertafter: 'test_line'
+        block: |
+          iface eth0 inet static
+          address 192.0.2.23
+          netmask 255.255.255.0
+      tags:
+        - add_block
+
+# NOTE:: By default if i try to add 2 different blocks to the same file using blockinfile
+#        Only the last/latest block will be added apparently post all the markers "#" are added
+#        Everytime one runs this on the same file it will overwrite the older lines between the markers
+#        with the last block of lines which was metioned, case in point the "add_block" task's lines will be overwritten
+#        with that of the "add_block2" lines.
+#        Need to work with insertbefore/insertafter i think, will update soon here.
+    - name: Add mappings to /tmp/hosts
+      blockinfile:
+        create: true
+        path: /tmp/hosts
+        block: |
+          {{ item.ip }} {{ item.name }}
+        marker: "# {mark} ANSIBLE MANAGED BLOCK {{ item.name }}"
+      loop:
+        - { name: host1, ip: 10.10.1.10 }
+        - { name: host2, ip: 10.10.1.11 }
+        - { name: host3, ip: 10.10.1.12 }

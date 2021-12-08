@@ -1,0 +1,52 @@
+---
+- name: Play to learn about lineinfile/blockinfile/replace modules in ansible
+  hosts: localhost
+  gather_facts: false
+  become_user: sriraagsridhar
+  vars:
+    main_path: '/Users/sriraagsridhar/Desktop/Learning/Ansible/github/LearnAnsible'
+  tasks:
+    - name: Task to create a file called simple_lineinfile.txt
+      file:
+        state: touch
+        path: '{{main_path}}/simple_lineinfile.txt'
+
+
+    - name: Simple lineinfile to add a line to the end of a file
+      lineinfile:
+        path: '{{main_path}}/simple_lineinfile.txt'
+        line: 'Simple line which was appended to end of the line'
+        mode: '0660'
+
+    - name: Simple blockinfile to add multiple blocks of line to a file
+      blockinfile:
+        path: '{{main_path}}/simple_blockinfile.txt'
+        block: |
+          This is 1st line of block in file
+          This is 2nd line of block in file
+            This is 3rd line of block in file
+        create: true
+
+### Using Regex to work with lineinfile and blockinfile
+
+# LINEINFILE
+# This will match this regexp and will replace the line which has this exp with line below
+# This module ensures a particular line is in a file, or replace an existing line using a back-referenced regular expression. 
+# This is primarily useful when you want to change a single line in a file only
+    - name: Replacing a single line which matches a specific regex expression using lineinfile with that of a custom line
+      lineinfile:
+        path: '{{main_path}}/simple_lineinfile.txt'
+        regexp: '1.1.1.1' 
+        line: 'listen_addr = 2.2.2.2'
+
+    - name: Inserting After a specific regex expression using lineinfile
+      lineinfile:
+        path: '{{main_path}}/simple_lineinfile.txt'
+        insertafter: '127\.0\.0\.1'
+        line: '#localhost ipaddress'
+
+    - name: Inserting After a specific regex expression using lineinfile
+      lineinfile:
+        path: '{{main_path}}/simple_lineinfile.txt'
+        insertbefore: '.*127\.0\.0\.1'
+        line: '# below is the ipaddress of localhost'
