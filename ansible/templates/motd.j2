@@ -1,0 +1,7 @@
+# THIS FILE IS MANAGED BY ANSIBLE
+HOSTNAME: {{ansible_facts['hostname']}}
+OS_DISTRO: {{ansible_facts['distribution']}}
+OS_VERSION: {{ansible_facts['distribution_version']}}
+IPADDRESS: {{ansible_facts['default_ipv4']['address']}}
+MEM_FREE_MB: {{ansible_facts['memtotal_mb']}}
+CPUs: {{ansible_facts['processor_vcpus']}}

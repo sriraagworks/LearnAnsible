@@ -1,0 +1,23 @@
+---
+- name: Play to learn about template module
+  hosts: all
+  vars:
+    admin_email: 'admin@workmail.com'
+  tasks:
+
+    - name: Task to place motd template in temp
+      template:
+        src: 'motd.j2'
+        dest: '/etc/motd'
+        owner: root 
+        group: root
+        mode: '0644'
+
+    - name: Placing users file in tmp too which has examples of jinj2 comments/conditionals
+      template:
+        src: 'users.j2'
+        dest: '/tmp/users_info'
+        owner: admin
+        group: admin
+        mode: '0600'
+        

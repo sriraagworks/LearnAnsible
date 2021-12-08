@@ -1,0 +1,13 @@
+# THIS FILE IS MANAGED BY ANSIBLE AND WILL LIST THE USERS WHICH WERE PASSED DURING THIS PLAY EXECUTION
+
+{# Sample Comment using jinja2 template #}
+ADMIN_EMAIL=> {{ admin_email }}
+
+{% for node in groups['all'] %}
+----------{{node}}----------
+IPV4-ADDRESS ==> {{hostvars[node]['ansible_facts']['default_ipv4']['address']}}
+FQDN 				 ==> {{hostvars[node]['ansible_facts']['fqdn']}}
+HOSTNAME     ==> {{hostvars[node]['ansible_facts']['hostname']}}
+
+
+{% endfor %}
