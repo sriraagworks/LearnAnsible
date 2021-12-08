@@ -1,0 +1,29 @@
+---
+- name: Play to learn about replace module
+  hosts: localhost
+  vars:
+    dest_file: '/tmp/temp.txt'
+  gather_facts: false
+  tasks:
+    - name: Blockinfile module to create a file with bunch of lines
+      blockinfile:
+        create: true
+        path: '{{ dest_file }}'
+        block: |
+          # apple
+          # apple
+          # mango
+          # banana
+          # jack-fruit
+
+    - name: Replace apple with APPLE using replace module
+      replace:
+        path: '{{ dest_file }}'
+        regexp: '.*apple.*'
+        replace: 'APPLE'
+
+    - name: Replace multi-line using replace module
+      replace:
+        path: '{{ dest_file }}'
+        regexp: 'APPLE\nAPPLE'
+        replace: 'multiline replace'
