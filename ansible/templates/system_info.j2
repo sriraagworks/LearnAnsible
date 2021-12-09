@@ -1,0 +1,18 @@
+{# This is a file where we will use facts and populate system facts using template module in ansible #}
+
+#######################################SYSTEM-INFO#######################################
+HOSTNAME			=> {{ ansible_facts['hostname']}}
+IP-ADDRESS		=> {{ ansible_facts['default_ipv4']['address']}}
+OS-DISTRO			=> {{ ansible_facts['distribution']}}
+#######################################SYSTEM-INFO#######################################
+#
+
+##Referencing Variables from playbook
+USERNAME: {{user_info['name']}}
+ID: {{user_info['id']}}
+
+##This play is being run against below hosts
+{% for host in groups['all'] %}
+{{ host }}
+{{ hostvars[host]['ansible_facts']['hostname'] }} ==> {{ hostvars[host]['ansible_facts']['default_ipv4']['address'] }}
+{% endfor %}

@@ -1,0 +1,23 @@
+---
+- name: Play to revise template module in ansible 
+  hosts: all
+  vars:
+    user_info:
+      name: 'abcd'
+      id: 123
+  tasks:
+    - name: Creating a temporary directory in /tmp called trash
+      file:
+        state: directory
+        mode: '2755'
+        path: '/tmp/trash'
+        owner: admin
+        group: admin 
+
+    - name: Using template modulel to create a config file and dynamically populate the same
+      template:
+        src: 'system_info.j2'
+        dest: '/tmp/trash/system_info'
+        owner: admin
+        group: admin
+        mode: 0644
