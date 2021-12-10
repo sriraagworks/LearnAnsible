@@ -1,0 +1,19 @@
+---
+- name: Play to learn about including/importing tasks/plays
+  hosts: all
+  tasks:
+    - name: 'Importing Task One From Playbook.yml'
+      import_tasks: 'tasks/task1.yml'
+
+    - name: 'Including Task One From Playbook.yml'
+      include_tasks: 'tasks/task1.yml'
+
+    - name: 'Importing Another Task From Playbook.yml to learn about conditionals with import/include'
+      import_tasks: 'tasks/conditional.yml'
+#      vars:
+#        x: "this is variable x's value" 
+## If i uncomment this, since we've defined variable x here it will be accessible to all tasks in imported file
+## Since here we are adding/defining variable x inside of the imported task and not passing from main playbook
+## And then applying the when conditional to it, that is when we will truly understand how these conditionals
+## apply to tasks inside of the imported play 
+      when: x is defined

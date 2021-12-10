@@ -1,0 +1,26 @@
+---
+- name: Play to revise conditionals
+  hosts: localhost
+  gather_facts: true
+  vars:
+    x: '10'
+  tasks:
+    - name: Checking if Variable x is defined
+      debug:
+        msg: 'Variable X is defined and its value is {{ x }}'
+      when: x is defined
+
+    - name: Checking other multi-conditionals
+      debug:
+        msg: 'Checking multiple conditionals'
+      when:
+        - true
+        - '11 > 2'
+        - y is not defined
+        - ansible_facts['distribution'] == 'RedHat'
+
+
+    - name: OR Conditionals
+      debug:
+        msg: 'Checking conditionals with OR and AND together'
+      when: false or ((1>0) and (11>10))

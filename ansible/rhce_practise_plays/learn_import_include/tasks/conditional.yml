@@ -1,0 +1,19 @@
+---
+- name: Setting a variable x - Inside Conditional Task
+  set_fact:
+    x: '10'
+
+- name: Printing Value of x - Inside Conditional Task
+  debug:
+    var: x
+
+## In the main playbook.yml when this task is imported
+## And when we add the conditional with 'when: x is not defined'
+## So technically, since the task1 here which sets a variable when it is run x is not defined, thus it runs
+## However, when we reach to Printing the value of x, till then the variable x has already been defined, thus the
+## conditional of 'when: x is not defined' fails and 2nd task of priting x value is skipped
+#
+# If we set conditional 'when: x is defined' both tasks will be skipped, why?
+# Since when the control comes to 1st task here, it never runs since 'x is not defined' and we are applying 'when: x is defined' on the 1st/2nd task.
+# Since the 1st Task does not run which is responsible for defining x variable thus when control comes to 2nd task debug module does not run 
+# since x was never defined.

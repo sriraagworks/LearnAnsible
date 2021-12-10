@@ -1,0 +1,11 @@
+---
+- name: Task to Install a Package
+  yum:
+    name: '{{ package }}'
+    state: latest
+
+- name: Task to enable/start the service
+  service:
+    name: '{{ service }}'
+    enabled: true
+    state: started

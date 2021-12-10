@@ -1,0 +1,19 @@
+---
+- name: Task to setup/install firewalld package
+  yum:
+    name: '{{ firewall_pkg }}'
+    state: latest
+
+- name: Enable/Start firewall package
+  service:
+    name: '{{ firewall_svc }}'
+    enabled: true
+    state: started
+
+- name: Add Service Rule
+  firewalld:
+    state: enabled
+    permanent: true 
+    immediate: true
+    service: '{{ item }}'
+  loop: '{{ rule }}'

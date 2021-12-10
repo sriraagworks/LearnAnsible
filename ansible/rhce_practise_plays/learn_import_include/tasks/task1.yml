@@ -1,0 +1,4 @@
+---
+- name: 'Printing a message from task1 - Inside Task'
+  debug:
+    msg: 'This is a hello from task1'
