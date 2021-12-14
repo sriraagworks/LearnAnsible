@@ -5,6 +5,7 @@
     se_context_type : "httpd_config_t"
     remote_dir : "/web"
     regex_sefcontext : '/web(/.*)?'
+    se_port_type: 'http_port_t'
 
   tasks:
 
@@ -33,6 +34,15 @@
         target: '{{ regex_sefcontext }}'
         state: present
 
+### Adding SEMANAGE PORT RULES
+
+    - name: Applying semanage port rules
+      seport:
+        state: present
+        proto: tcp
+        ports: 82
+        setype: '{{ se_port_type }}'
+
     - name: Task to restart httpd
       service:
         name: httpd
@@ -44,6 +54,7 @@
         return_content: true
         status_code: 200
       register: uri_output
+
 
     - name: Printing Debug Output
       debug:
