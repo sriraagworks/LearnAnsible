@@ -1,0 +1,50 @@
+---
+- name: "Play to learn about selinux modules [Change Policy/Context Type/Port/Restorecon]"
+  hosts: host3
+  vars:
+    se_context_type : "httpd_config_t"
+    remote_dir : "/web"
+    regex_sefcontext : '/web(/.*)?'
+
+  tasks:
+
+    - name: Create /web directory
+      file:
+        state: directory
+        path: '/web'
+        mode: '2755'
+        owner: root
+        group: root
+        setype: '{{ se_context_type }}'
+
+    - name: Create index.html using copy module
+      copy:
+        dest: '{{remote_dir}}/index.html'
+        content: 'hi from /web directory'
+        setype: '{{ se_context_type }}'
+        mode: '0644'
+        owner: root
+        group: root
+        backup: true
+
+    - name: Applying the file-contexts
+      sefcontext:
+        setype: '{{ se_context_type }}'
+        target: '{{ regex_sefcontext }}'
+        state: present
+
+    - name: Task to restart httpd
+      service:
+        name: httpd
+        state: restarted
+
+    - name: Making A Get/Curl to host3
+      uri:
+        url: 'http://{{ansible_facts["hostname"]}}'
+        return_content: true
+        status_code: 200
+      register: uri_output
+
+    - name: Printing Debug Output
+      debug:
+        var: uri_output['content']

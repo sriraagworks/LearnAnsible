@@ -1,0 +1,7 @@
+---
+
+- name: Task to add nagios ip in /etc/hosts
+  lineinfile:
+    backup: true
+    line: '10.0.1.110 nagios.example.com'
+    path: '/etc/hosts'

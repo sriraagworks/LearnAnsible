@@ -1,0 +1,5 @@
+---
+- name: Task to deploy motd file to remote hosts
+  template:
+    src: 'motd.j2'
+    dest: '/etc/motd'

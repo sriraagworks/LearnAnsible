@@ -1,0 +1,24 @@
+---
+
+# Create a noc user
+# Create .ssh directory
+# Copy authorized_keys to .ssh/
+#
+- name: Task to create noc user
+  user:
+    name: 'noc'
+
+- name: Task to create .ssh directory for the noc user
+  file:
+    state: directory
+    path: '/home/noc/.ssh'
+    owner: noc
+    group: noc
+    mode: '0600'
+
+- name: Copy authorized_key to noc's .ssh directory
+  copy:
+    src: 'authorized_keys'
+    dest: '/home/noc/.ssh/'
+    backup: true
+    mode: '0600'

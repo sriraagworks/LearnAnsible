@@ -1,0 +1,14 @@
+---
+# tasks file for baseline
+
+- name: Importing deploy_motd task
+  import_tasks: 'deploy_motd.yml'
+
+- name: Importing deploy_nagios task
+  import_tasks: 'deploy_nagios.yml'
+
+- name: Importing edit hosts file
+  import_tasks: 'edit_hosts.yml'
+
+- name: Importing deploy_noc_user task file
+  import_tasks: 'deploy_noc_user.yml'

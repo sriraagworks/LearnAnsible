@@ -1,0 +1,6 @@
+---
+- name: Task to setup/install nagios
+  yum:
+    name: 'nrpe'
+    state: latest
+    update_cache: true
